@@ -1,0 +1,366 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>How to Connect to Amazon APIs</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            background-color: #f8f9fa;
+        }
+
+        header {
+            background: linear-gradient(135deg, #232f3e, #37475a);
+            color: #fff;
+            padding: 3rem 1rem;
+            text-align: center;
+        }
+
+        header h1 {
+            font-size: 2.2rem;
+            margin-bottom: 0.5rem;
+        }
+
+        header p {
+            font-size: 1.1rem;
+            opacity: 0.85;
+        }
+
+        main {
+            max-width: 860px;
+            margin: 2rem auto;
+            padding: 0 1rem;
+        }
+
+        .card {
+            background: #fff;
+            border-radius: 8px;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+            padding: 2rem;
+            margin-bottom: 2rem;
+        }
+
+        .card h2 {
+            font-size: 1.4rem;
+            margin-bottom: 1rem;
+            color: #232f3e;
+            border-bottom: 2px solid #ff9900;
+            padding-bottom: 0.4rem;
+            display: inline-block;
+        }
+
+        .card h3 {
+            font-size: 1.1rem;
+            margin: 1.2rem 0 0.5rem;
+            color: #37475a;
+        }
+
+        ol, ul {
+            margin-left: 1.5rem;
+            margin-bottom: 1rem;
+        }
+
+        li {
+            margin-bottom: 0.5rem;
+        }
+
+        code {
+            background: #f1f3f5;
+            padding: 0.15rem 0.4rem;
+            border-radius: 4px;
+            font-size: 0.9em;
+            color: #c7254e;
+        }
+
+        pre {
+            background: #232f3e;
+            color: #f8f8f2;
+            padding: 1rem 1.2rem;
+            border-radius: 6px;
+            overflow-x: auto;
+            margin: 1rem 0;
+            font-size: 0.9rem;
+            line-height: 1.5;
+        }
+
+        pre code {
+            background: none;
+            color: inherit;
+            padding: 0;
+        }
+
+        .note {
+            background: #fff8e1;
+            border-left: 4px solid #ff9900;
+            padding: 1rem 1.2rem;
+            border-radius: 0 6px 6px 0;
+            margin: 1rem 0;
+        }
+
+        .note strong {
+            color: #e68a00;
+        }
+
+        .api-list {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+            gap: 1rem;
+            list-style: none;
+            margin-left: 0;
+        }
+
+        .api-list li {
+            background: #f8f9fa;
+            border: 1px solid #dee2e6;
+            border-radius: 6px;
+            padding: 1rem;
+        }
+
+        .api-list li strong {
+            display: block;
+            color: #232f3e;
+            margin-bottom: 0.25rem;
+        }
+
+        a {
+            color: #0073bb;
+        }
+
+        footer {
+            text-align: center;
+            padding: 2rem 1rem;
+            color: #6c757d;
+            font-size: 0.9rem;
+        }
+    </style>
+</head>
+<body>
+
+<header>
+    <h1>How to Connect to Amazon APIs</h1>
+    <p>A step-by-step guide to setting up and using AWS and Amazon service APIs</p>
+</header>
+
+<main>
+
+    <!-- Overview -->
+    <section class="card">
+        <h2>Overview</h2>
+        <p>Amazon provides APIs through <strong>Amazon Web Services (AWS)</strong> and standalone product APIs. This guide covers how to get started, authenticate, and make your first API calls.</p>
+
+        <h3>Popular Amazon APIs</h3>
+        <ul class="api-list">
+            <li><strong>AWS (S3, EC2, Lambda, etc.)</strong>Cloud infrastructure and services</li>
+            <li><strong>Amazon SP-API</strong>Selling Partner API for marketplace sellers</li>
+            <li><strong>Product Advertising API</strong>Product search and affiliate links</li>
+            <li><strong>Alexa Skills Kit</strong>Build voice experiences for Alexa</li>
+        </ul>
+    </section>
+
+    <!-- Step 1 -->
+    <section class="card">
+        <h2>Step 1: Create an AWS Account</h2>
+        <ol>
+            <li>Go to <a href="https://aws.amazon.com/" target="_blank" rel="noopener">aws.amazon.com</a> and click <strong>Create an AWS Account</strong>.</li>
+            <li>Provide your email address, choose an account name, and set a password.</li>
+            <li>Enter your contact and billing information (a credit card is required, but many services have a free tier).</li>
+            <li>Complete identity verification and select a support plan.</li>
+        </ol>
+        <div class="note">
+            <strong>Note:</strong> If you only need the Selling Partner API or Product Advertising API, you will also need an Amazon Seller or Associates account respectively.
+        </div>
+    </section>
+
+    <!-- Step 2 -->
+    <section class="card">
+        <h2>Step 2: Create an IAM User and Access Keys</h2>
+        <p>Never use your root account credentials for API access. Instead, create a dedicated IAM user.</p>
+        <ol>
+            <li>Sign in to the <strong>AWS Management Console</strong> and open the <strong>IAM</strong> service.</li>
+            <li>Click <strong>Users</strong> &rarr; <strong>Create user</strong>.</li>
+            <li>Enter a username (e.g., <code>api-user</code>) and click <strong>Next</strong>.</li>
+            <li>Attach policies that grant only the permissions you need (e.g., <code>AmazonS3ReadOnlyAccess</code>).</li>
+            <li>After creating the user, go to <strong>Security credentials</strong> &rarr; <strong>Create access key</strong>.</li>
+            <li>Choose the <strong>Application running outside AWS</strong> use case.</li>
+            <li>Download or copy the <strong>Access Key ID</strong> and <strong>Secret Access Key</strong>.</li>
+        </ol>
+        <div class="note">
+            <strong>Important:</strong> Store your secret access key securely. You will not be able to view it again after this step.
+        </div>
+    </section>
+
+    <!-- Step 3 -->
+    <section class="card">
+        <h2>Step 3: Configure Your Credentials</h2>
+
+        <h3>Option A: AWS CLI</h3>
+        <p>Install the AWS CLI and run:</p>
+        <pre><code>aws configure</code></pre>
+        <p>You will be prompted to enter:</p>
+        <pre><code>AWS Access Key ID [None]: AKIAIOSFODNN7EXAMPLE
+AWS Secret Access Key [None]: wJalrXUtnFEMI/K7MDENG/bPxRfiCYEXAMPLEKEY
+Default region name [None]: us-east-1
+Default output format [None]: json</code></pre>
+
+        <h3>Option B: Environment Variables</h3>
+        <pre><code>export AWS_ACCESS_KEY_ID="AKIAIOSFODNN7EXAMPLE"
+export AWS_SECRET_ACCESS_KEY="wJalrXUtnFEMI/K7MDENG/bPxRfiCYEXAMPLEKEY"
+export AWS_DEFAULT_REGION="us-east-1"</code></pre>
+
+        <h3>Option C: Credentials File</h3>
+        <p>Create or edit <code>~/.aws/credentials</code>:</p>
+        <pre><code>[default]
+aws_access_key_id = AKIAIOSFODNN7EXAMPLE
+aws_secret_access_key = wJalrXUtnFEMI/K7MDENG/bPxRfiCYEXAMPLEKEY</code></pre>
+    </section>
+
+    <!-- Step 4 -->
+    <section class="card">
+        <h2>Step 4: Install an SDK</h2>
+        <p>Amazon provides official SDKs for most popular languages:</p>
+
+        <h3>Python (boto3)</h3>
+        <pre><code>pip install boto3</code></pre>
+
+        <h3>JavaScript / Node.js</h3>
+        <pre><code>npm install @aws-sdk/client-s3</code></pre>
+
+        <h3>Java</h3>
+        <pre><code>&lt;dependency&gt;
+    &lt;groupId&gt;software.amazon.awssdk&lt;/groupId&gt;
+    &lt;artifactId&gt;s3&lt;/artifactId&gt;
+&lt;/dependency&gt;</code></pre>
+
+        <h3>Go</h3>
+        <pre><code>go get github.com/aws/aws-sdk-go-v2/aws</code></pre>
+    </section>
+
+    <!-- Step 5 -->
+    <section class="card">
+        <h2>Step 5: Make Your First API Call</h2>
+
+        <h3>Python &mdash; List S3 Buckets</h3>
+        <pre><code>import boto3
+
+s3 = boto3.client("s3")
+response = s3.list_buckets()
+
+for bucket in response["Buckets"]:
+    print(bucket["Name"])</code></pre>
+
+        <h3>JavaScript &mdash; List S3 Buckets</h3>
+        <pre><code>import { S3Client, ListBucketsCommand } from "@aws-sdk/client-s3";
+
+const client = new S3Client({ region: "us-east-1" });
+const response = await client.send(new ListBucketsCommand({}));
+
+response.Buckets.forEach(bucket =&gt; {
+    console.log(bucket.Name);
+});</code></pre>
+
+        <h3>Using the AWS CLI Directly</h3>
+        <pre><code>aws s3 ls</code></pre>
+    </section>
+
+    <!-- Selling Partner API -->
+    <section class="card">
+        <h2>Connecting to the Selling Partner API (SP-API)</h2>
+        <p>If you sell on Amazon Marketplace, the SP-API lets you manage listings, orders, and fulfillment programmatically.</p>
+        <ol>
+            <li>Register as a developer in <strong>Seller Central</strong> under <strong>Apps &amp; Services &rarr; Develop Apps</strong>.</li>
+            <li>Create a new app and note your <strong>Client ID</strong> and <strong>Client Secret</strong>.</li>
+            <li>Create an IAM role and policy with the <code>execute-api:Invoke</code> permission for SP-API.</li>
+            <li>Use the <strong>Login with Amazon (LWA)</strong> OAuth flow to obtain an access token:</li>
+        </ol>
+        <pre><code>curl -X POST https://api.amazon.com/auth/o2/token \
+  -d "grant_type=refresh_token" \
+  -d "refresh_token=YOUR_REFRESH_TOKEN" \
+  -d "client_id=YOUR_CLIENT_ID" \
+  -d "client_secret=YOUR_CLIENT_SECRET"</code></pre>
+        <p>Use the returned access token in the <code>x-amz-access-token</code> header for subsequent API calls.</p>
+    </section>
+
+    <!-- Product Advertising API -->
+    <section class="card">
+        <h2>Connecting to the Product Advertising API</h2>
+        <p>The Product Advertising API (PA-API 5.0) lets you search Amazon's product catalog and generate affiliate links.</p>
+        <ol>
+            <li>Sign up for the <a href="https://affiliate-program.amazon.com/" target="_blank" rel="noopener">Amazon Associates Program</a>.</li>
+            <li>Once approved, go to <strong>Tools &rarr; Product Advertising API</strong> and generate credentials.</li>
+            <li>Install the SDK or sign requests manually using AWS Signature Version 4.</li>
+            <li>Make requests to the <code>SearchItems</code>, <code>GetItems</code>, or <code>GetBrowseNodes</code> operations.</li>
+        </ol>
+        <pre><code># Example: Search for items (Python with paapi5)
+from paapi5_python_sdk.api.default_api import DefaultApi
+from paapi5_python_sdk.models.search_items_request import SearchItemsRequest
+
+api = DefaultApi(
+    access_key="YOUR_ACCESS_KEY",
+    secret_key="YOUR_SECRET_KEY",
+    host="webservices.amazon.com",
+    region="us-east-1"
+)
+
+request = SearchItemsRequest(
+    partner_tag="your-tag-20",
+    partner_type="Associates",
+    keywords="python programming",
+    search_index="Books",
+    item_count=5
+)
+
+response = api.search_items(request)</code></pre>
+    </section>
+
+    <!-- Best Practices -->
+    <section class="card">
+        <h2>Best Practices</h2>
+        <ul>
+            <li><strong>Least privilege:</strong> Only grant the IAM permissions each application actually needs.</li>
+            <li><strong>Rotate keys regularly:</strong> Set up key rotation policies and never hard-code credentials in source code.</li>
+            <li><strong>Use IAM roles</strong> instead of access keys when running on AWS infrastructure (EC2, Lambda, ECS).</li>
+            <li><strong>Enable MFA</strong> on your AWS root account and privileged IAM users.</li>
+            <li><strong>Monitor usage:</strong> Enable AWS CloudTrail to log all API calls for auditing.</li>
+            <li><strong>Handle rate limits:</strong> Implement exponential backoff and retry logic for throttled requests.</li>
+            <li><strong>Use environment variables or a secrets manager</strong> (e.g., AWS Secrets Manager) to store credentials.</li>
+        </ul>
+    </section>
+
+    <!-- Troubleshooting -->
+    <section class="card">
+        <h2>Troubleshooting</h2>
+
+        <h3>Common Errors</h3>
+        <ul>
+            <li><code>InvalidClientTokenId</code> &mdash; Your access key ID is incorrect or has been deactivated.</li>
+            <li><code>SignatureDoesNotMatch</code> &mdash; Your secret key is wrong or the request signing is malformed.</li>
+            <li><code>AccessDenied</code> &mdash; Your IAM user lacks the required permissions. Check your attached policies.</li>
+            <li><code>ExpiredToken</code> &mdash; Your temporary session token has expired. Request a new one.</li>
+            <li><code>ThrottlingException</code> &mdash; You are sending requests too fast. Add retry logic with exponential backoff.</li>
+        </ul>
+
+        <h3>Useful Resources</h3>
+        <ul>
+            <li><a href="https://docs.aws.amazon.com/" target="_blank" rel="noopener">AWS Documentation</a></li>
+            <li><a href="https://developer-docs.amazon.com/sp-api/" target="_blank" rel="noopener">SP-API Developer Guide</a></li>
+            <li><a href="https://webservices.amazon.com/paapi5/documentation/" target="_blank" rel="noopener">Product Advertising API Docs</a></li>
+        </ul>
+    </section>
+
+</main>
+
+<footer>
+    <p>&copy; 2026 Amazon API Connection Guide</p>
+</footer>
+
+</body>
+</html>
